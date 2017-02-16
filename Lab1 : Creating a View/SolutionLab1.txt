@@ -1,0 +1,31 @@
+db.people.find({});
+
+db.peopleSectors.drop();
+
+db.createView( "peopleSectors", "people", [
+      {$lookup: {
+             from: "companies",
+             localField: "company_id",
+             foreignField: "_id",
+             as: "company"
+           }
+    },
+    { $project: { first_name: 1, last_name : 1 , job : 1, employer: 1, "sector" : "$company.sector"},
+    }, {$unwind: "$sector"} ] );
+
+db.peopleSectors.find({});
+
+db.peopleSectors.find().sort( {
+                                  job: 1,
+                                  sector: 1,
+                                  last_name: 1,
+                                  first_name: 1
+                              } );
+
+
+db.peopleSectors.find().sort( {
+                                  job: 1,
+                                  sector: 1,
+                                  last_name: 1,
+                                  first_name: 1
+                              } ).limit(1);
